@@ -73,9 +73,9 @@ func main() {
 			continue
 		}
 		if strings.ToLower(word) == "where" {
-			result += "\n" + strings.ToLower(word) + " 1 = 1" + "\n"
+			result += "\n" + strings.ToLower(word) + " 1 = 1"
 			if !has1Equals1 {
-				result += "and "
+				result += "\n" + "and "
 			}
 			continue
 		}
@@ -94,6 +94,7 @@ func main() {
 		continue
 	}
 
+	result = strings.TrimSpace(result)
 	fmt.Printf("%v\n", result)
 	os.WriteFile("assets/result_"+time.Now().Format("20060102_150405")+".sql", []byte(result), 0644)
 }
