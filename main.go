@@ -30,14 +30,27 @@ func main() {
 
 	result := ""
 	has1Equals1 := false
-	betweenCount := 0
+	addNewLine := []string{"select", "and", "order"}
+	skipEndOnce := false
+	if contains(words, "1=1") {
+		has1Equals1 = true
+	}
 	for _, word := range words {
+		fmt.Printf("word: %v\n", word)
 		if word == "1=1" {
-			has1Equals1 = true
 			continue
 		}
 		if strings.HasPrefix(word, "--") {
-			result += word + "\n"
+			result += "\n" + word
+			continue
+		}
+		if contains(addNewLine, strings.ToLower(word)) {
+			if skipEndOnce {
+				skipEndOnce = false
+			} else {
+				result += "\n"
+			}
+			result += strings.ToLower(word) + " "
 			continue
 		}
 		if strings.Contains(word, ",") {
@@ -56,11 +69,11 @@ func main() {
 			continue
 		}
 		if word == "a" {
-			result += word + "\n"
+			result += word
 			continue
 		}
 		if strings.ToLower(word) == "where" {
-			result += strings.ToLower(word) + " 1 = 1" + "\n"
+			result += "\n" + strings.ToLower(word) + " 1 = 1" + "\n"
 			if !has1Equals1 {
 				result += "and "
 			}
@@ -69,16 +82,12 @@ func main() {
 		if strings.Contains(word, "=") {
 			left := strings.Split(word, "=")[0]
 			right := strings.Split(word, "=")[1]
-			result += formatCase(left) + " = " + right + "\n"
+			result += formatCase(left) + " = " + right
 			continue
 		}
-		if strings.Contains(word, ":") {
-			betweenCount += 1
+		if strings.ToLower(word) == "between" {
+			skipEndOnce = true
 			result += strings.ToLower(word) + " "
-			if betweenCount == 2 {
-				result += "\n"
-				betweenCount = 0
-			}
 			continue
 		}
 		result += strings.ToLower(word) + " "
